@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export GridGuard AI PPTX</title>
+    <!-- We use the PptxGenJS CDN to entirely avoid python/npm install errors -->
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <style>
+        body {
+            background: #050814;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: #00d4ff;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        button {
+            background-color: #00d4ff;
+            color: #050814;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-top: 20px;
+            display: none;
+            /* Shown after load */
+        }
+
+        button:hover {
+            background-color: #ffffff;
+        }
+
+        #status {
+            color: #aaaaaa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>GridGuard AI Data Exporter</h1>
+    <p id="status">Accessing slide generator engine...</p>
+    <div class="spinner" id="loader"></div>
+    <button id="downloadBtn" onclick="generateAndDownload()">Download Dashboard PPTX</button>
+
+    <script>
+        // Reveal the button once the library initializes
+        window.onload = function () {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('status').innerText = "Slide engine ready. Click below to export your live dashboard data to PowerPoint.";
+            document.getElementById('downloadBtn').style.display = 'block';
+        };
+
+        function generateAndDownload() {
+            document.getElementById('status').innerText = "Rendering PowerPoint file... please wait.";
+            document.getElementById('status').style.color = "#00ff88";
+
+            let pres = new PptxGenJS();
+            pres.layout = 'LAYOUT_16x9';
+
+            // Master Slide Layout for Dark Cyber Theme
+            pres.defineSlideMaster({
+                title: "DARK_MASTER",
+                background: { color: "0A0E1F" },
+                objects: [
+                    { rect: { x: 0, y: 0, w: '100%', h: 0.1, fill: { color: '00D4FF' } } }, // Top glow bar
+                    { text: { text: "GridGuard AI - Live Operations Report", options: { x: 0.2, y: 0.2, w: '50%', color: "00D4FF", fontSize: 10 } } }
+                ]
+            });
+
+            // Slide 1: Main Title
+            let slide1 = pres.addSlide({ masterName: "DARK_MASTER" });
+            slide1.addText("GridGuard AI Platform", { x: 0.5, y: 2.0, w: '90%', fontSize: 44, color: "00D4FF", align: 'center', bold: true });
+            slide1.addText("Grid Control Center - Export Report", { x: 0.5, y: 2.8, w: '90%', fontSize: 24, color: "FFFFFF", align: 'center' });
+            slide1.addText("Real-time smart grid monitoring & optimization", { x: 0.5, y: 3.3, w: '90%', fontSize: 16, color: "888888", align: 'center' });
+
+            // Slide 2: Top-level Metrics
+            let slide2 = pres.addSlide({ masterName: "DARK_MASTER" });
+            slide2.addText("Live Diagnostic Overview", { x: 0.5, y: 0.5, w: 9, fontSize: 32, color: "00D4FF", bold: true });
+            slide2.addText([
+                { text: "System State: ", options: { color: "AAAAAA" } }, { text: "Stable\n", options: { color: "00FF88", bold: true } },
+                { text: "System Risk Score: ", options: { color: "AAAAAA" } }, { text: "77 / 100\n", options: { color: "F97316", bold: true } },
+                { text: "System Health: ", options: { color: "AAAAAA" } }, { text: "83 / 100\n\n", options: { color: "00FF88", bold: true } },
+                { text: "Current Load: ", options: { color: "AAAAAA" } }, { text: "371.5 MW (1.3% cap)\n", options: { color: "FFFFFF", bold: true } },
+                { text: "Total Renewable: ", options: { color: "AAAAAA" } }, { text: "41.9 MW (11.3% mix)\n", options: { color: "FFFFFF", bold: true } },
+                { text: "Peak Capacity: ", options: { color: "AAAAAA" } }, { text: "29,000 MW", options: { color: "FFFFFF", bold: true } }
+            ], { x: 0.5, y: 1.5, w: 4.5, h: 3, fontSize: 20, fill: { color: "111827" } });
+
+            slide2.addText([
+                { text: "BESS Status: ", options: { color: "AAAAAA" } }, { text: "IDLE (50.0% SOC)\n", options: { color: "FFFFFF", bold: true } },
+                { text: "Live Tariff: ", options: { color: "AAAAAA" } }, { text: "SURGE ($49.78 /MWh)\n", options: { color: "FF3C3C", bold: true } },
+                { text: "Grid Frequency: ", options: { color: "AAAAAA" } }, { text: "50.003 Hz\n", options: { color: "FFFFFF", bold: true } },
+                { text: "Active Alerts: ", options: { color: "AAAAAA" } }, { text: "1 Warning\n\n", options: { color: "FF3C3C", bold: true } },
+                { text: "Live Analysis: ", options: { color: "AAAAAA" } }, { text: "\nRenewable Disc: 21.6%\nLoad Factor: 1.36x", options: { color: "FFFFFF", bold: true } }
+            ], { x: 5.2, y: 1.5, w: 4.5, h: 3, fontSize: 20, fill: { color: "111827" } });
+
+            // Slide 3: Topology & Routing
+            let slide3 = pres.addSlide({ masterName: "DARK_MASTER" });
+            slide3.addText("Live Grid Topology & Diagnostics", { x: 0.5, y: 0.5, w: 9, fontSize: 32, color: "00D4FF", bold: true });
+            slide3.addText([
+                { text: "📍 New Delhi Interactive Map\n", options: { color: "00D4FF", bold: true } },
+                { text: "Lat/Lng Data Sync Active\n\n", options: { color: "AAAAAA", fontSize: 16 } },
+                { text: "Self-Healing Topology Logs\n", options: { bold: true, fontSize: 24 } },
+                { text: "Failure Point: Substation-C\nTarget Node: Substation-E\nStatus: ", options: { color: "AAAAAA" } },
+                { text: "SUCCESS_FULL_CAPACITY\n\n", options: { color: "00FF88", bold: true } },
+                { text: "Calculated Reroute Path:\n", options: { color: "AAAAAA" } },
+                { text: "Substation-A → Substation-B → Substation-D → Substation-E\n", options: { color: "FFFFFF", bold: true } },
+                { text: "Hops: 3 | Bottleneck Flow: 50 MW", options: { color: "AAAAAA" } }
+            ], { x: 0.5, y: 1.5, w: 9, fontSize: 18 });
+
+            // Slide 4: EV & Bidding
+            let slide4 = pres.addSlide({ masterName: "DARK_MASTER" });
+            slide4.addText("Fleets & Markets Optimization", { x: 0.5, y: 0.5, w: 9, fontSize: 32, color: "00D4FF", bold: true });
+            slide4.addText([
+                { text: "Smart EV Fleet Scheduler\n", options: { color: "00D4FF", bold: true } },
+                { text: "Active alignment of 5,000 EV chargers with solar generation\n", options: { color: "AAAAAA" } },
+                { text: "Peak Reduced by 26.6%\n", options: { color: "00FF88", bold: true } },
+                { text: "Unmanaged Peak: 24.8 MW | Optimized Peak: 18.2 MW\n", options: { color: "FFFFFF" } },
+                { text: "Next optimal window: 10:00 - 15:00\n\n", options: { color: "00D4FF" } },
+                { text: "AI Wholesale Bidding Agent\n", options: { color: "00D4FF", bold: true } },
+                { text: "Market Price: ", options: { color: "AAAAAA" } }, { text: "$39.34/MWh\n", options: { color: "FFFFFF" } },
+                { text: "Expected PnL: ", options: { color: "AAAAAA" } }, { text: "+$0\n", options: { color: "FFFFFF" } },
+                { text: "AI Recommendation: ", options: { color: "AAAAAA" } }, { text: "HOLD (Confidence: 73.0%)", options: { color: "00D4FF", bold: true } }
+            ], { x: 0.5, y: 1.5, w: 9, fontSize: 18 });
+
+            // Slide 5: Security & Carbon Ledger
+            let slide5 = pres.addSlide({ masterName: "DARK_MASTER" });
+            slide5.addText("Security & Carbon Tracking", { x: 0.5, y: 0.5, w: 9, fontSize: 32, color: "00D4FF", bold: true });
+            slide5.addText([
+                { text: "SCADA Intrusion Detection System\n", options: { color: "00D4FF", bold: true } },
+                { text: "Status: ", options: { color: "AAAAAA" } }, { text: "SECURE\n", options: { color: "00FF88", bold: true } },
+                { text: "Traffic Rate: 544 req/s | Unauthorized IPs: 0 blocked\n", options: { color: "FFFFFF" } },
+                { text: "Threat Score: 3.4/100\n", options: { color: "FFFFFF" } },
+                { text: "Real-Time Anomalies: No statistical anomalies. Grid is stable.\n\n", options: { color: "00FF88" } },
+                { text: "Live Carbon Ledger (SQL Audit)\n", options: { color: "00D4FF", bold: true } },
+                { text: "Network Sync Hash: 13858288a75b41328e1fb8beff298a8a\n", options: { color: "AAAAAA", fontSize: 12 } },
+                { text: "\nRecent Blockchain Transactions (SolarCorp → TechIndustries):\n", options: { color: "AAAAAA" } },
+                { text: "Tx: 13858288... | 14.7MWh | 5.87 tons\nTx: 6683ac95... | 29.0MWh | 11.60 tons\nTx: 1affe2c0... | 30.0MWh | 11.99 tons\nTx: df20c85d... | 18.0MWh | 7.18 tons", options: { color: "FFFFFF", fontFace: "Courier New" } }
+            ], { x: 0.5, y: 1.5, w: 9, fontSize: 16 });
+
+            pres.writeFile({ fileName: "GridGuard_Live_Dashboard_Data.pptx" }).then(() => {
+                document.getElementById('status').innerText = "✅ Download Complete! Check your browser's download folder.";
+            });
+        }
+    </script>
+</body>
+
+</html>
